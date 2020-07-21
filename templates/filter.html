@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+<!-- https://getbootstrap.com/docs/4.3/components/forms/ -->
+{% block body %}
+<div class="container" style="margin-top: 80px;">
+	<h1>Filter</h1>
+	<hr>
+	<form style="display: flex;">
+		<div style="flex-basis: 400px;" class="form-group mb-2">
+			<label for="dateInput" class="sr-only">Date</label>
+			<input type="text" class="form-control" id="dateInput" value="23.02.2020 25.03.2020">
+		</div>
+		<div style="flex-basis: 100px;" class="form-group mx-sm-3 mb-2">
+			<label for="beforeStart" class="sr-only">Before start</label>
+			<input type="text" class="form-control" id="beforeStart" placeholder="5 min">
+		</div>		
+		<div class="form-group mx-sm-3 mb-2">
+			<label for="Team1Input" class="sr-only">Team 1</label>
+			<input type="text" class="form-control" id="Team1Input" placeholder="Syman">
+		</div>		
+		<div class="form-group mx-sm-3 mb-2">
+			<label for="Team2Input" class="sr-only">Team 2</label>
+			<input type="text" class="form-control" id="Team2Input" placeholder="Syman">
+		</div>		
+		<div class="form-group mx-sm-3 mb-2">
+			<label for="Market1Input" class="sr-only">Market1</label>
+			<input type="text" class="form-control" id="Market1Input" placeholder="1000">
+		</div>		
+		<div class="form-group mx-sm-3 mb-2">
+			<label for="Market2Input" class="sr-only">Market2</label>
+			<input type="text" class="form-control" id="Market2Input" placeholder="1000">
+		</div>		
+		<div class="form-group mx-sm-3 mb-2">
+			<label for="ResultInput" class="sr-only">Result</label>
+			<input type="text" readonly class="form-control" id="Result" placeholder="-">
+		</div>
+		
+		<button type="submit" class="btn btn-primary mb-2">Send</button>
+	</form>
+</div>
+
+{% endblock %}
+
+{% block script %}
+	<script src="{{url_for('static', filename='js/tablefilter/tablefilter.js')}}"></script>
+	<script>
+	    var tf = new TableFilter('demo');
+    	tf.init();
+	</script>
+{% endblock %}
+

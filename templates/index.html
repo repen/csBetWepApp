@@ -8,10 +8,13 @@
 	<div class="container" style="margin-top: 80px;">
 		<h1>List Match</h1>
 
-
-		<a href="match/2143214">
-			<button type="button" class="btn btn-light m-1"> Test <br> Test </button>
+		{% for fixture in data['fixtures'] %}
+		
+		<a href="match/{{fixture[0]}}">
+			<button type="button" class="btn btn-light m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>
 		</a> 
+
+		{% endfor %}
 
 	</div>
 {% endblock %}
