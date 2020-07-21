@@ -1,15 +1,16 @@
 from peewee import *
-from Globals import DB_DIR
+from Globals import WORK_DIR
 from datetime import datetime
+# from data_prepare import data_filter, Match, MatchMovedError
 
-db = SqliteDatabase(DB_DIR + "/csgo.db")
+db = SqliteDatabase(WORK_DIR + "/data/database/csgo.db")
 
 
 class CSGame(Model):
     m_id     = CharField()
     m_time   = IntegerField()
-    snapshot = BlobField()
-    active   = IntegerField()
+    team1    = CharField()
+    team2    = CharField()
 
     class Meta:
         database = db
