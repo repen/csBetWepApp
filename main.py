@@ -4,11 +4,23 @@ from Model import CSGame, Market, Fixture
 from bs4 import BeautifulSoup
 from datetime import datetime
 from Globals import WORK_DIR
-from tools import hash_, listdir_fullpath
+from tools import hash_, listdir_fullpath, get_search
+import itertools
 
 app = Flask(__name__)
 
+@app.context_processor
+def utility_processor():
+    def search_markets(array, name):
+        result = False
+        array = [x for x in array if x.name == name]
+        if array:
+            result = array[0]
+        return result
 
+    def time_human(timestamp):
+        return datetime.fromtimestamp( timestamp ).strftime("%Y.%m.%d %H:%M")
+    return dict(search_markets=search_markets, time_human=time_human)
 
 @app.route('/')
 def index():
@@ -49,9 +61,50 @@ def match_page(m_id):
     else:
         return "Not path_id " + m_id 
 
+def prepare_date(string):
+    start = string.split(":")[0]
+    end = string.split(":")[1]
+    return (datetime.strptime(start, "%Y-%m-%d").timestamp(), datetime.strptime(end, "%Y-%m-%d").timestamp())
+
 @app.route('/filter')
 def filter_page():
     data = {}
+    data['result'] = []
+    params = request.args.to_dict()
+    
+    fixtures = []
+    l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
+
+
+    for path in l_objs:
+        
+        with open(path, "rb") as f:
+            fixture = pickle.load(f)
+        fixtures.append( fixture )
+
+    if params:
+        {
+        'time': '2020-07-21:2020-07-22', 'name_market': '', 
+        't1name': '', 't2name': '', 'sum_t1': '100', 'sum_t2': '100', 'num_snapshot': '5'}
+        params['time'] = prepare_date( params['time'] )
+        params['sum_t1'] = int( params['sum_t1'] )
+        params['sum_t2'] = int( params['sum_t2'] )
+        params['num_snapshot'] = int( params['num_snapshot'] )
+        query = get_search(params, fixtures)
+        
+        for q in query:
+            for e, m in enumerate( q.markets):
+                if not m:
+                    q.markets.pop(e)
+
+        data['result'] = query
+        data['params'] = params
+        # print(query[0].markets[-5][  ], "!!!")
+
+
+    data["name_markets"] = set( itertools.chain.from_iterable( [x.name_markets for x in fixtures] ) )
+    data["teams"] = set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) )
+
     return render_template("filter.html", data = data)
 
 
