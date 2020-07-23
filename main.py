@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import os, json, re, pickle
-from Model import CSGame, Market, Fixture
+from Model import CSGame
+from objbuild import Market, Fixture
 from bs4 import BeautifulSoup
 from datetime import datetime
 from Globals import WORK_DIR
@@ -20,6 +21,7 @@ def utility_processor():
 
     def time_human(timestamp):
         return datetime.fromtimestamp( timestamp ).strftime("%Y.%m.%d %H:%M")
+
     return dict(search_markets=search_markets, time_human=time_human)
 
 @app.route('/')
