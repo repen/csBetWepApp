@@ -2,7 +2,7 @@ from peewee import *
 from Globals import WORK_DIR
 from datetime import datetime
 
-db = SqliteDatabase(WORK_DIR + "/data/database/csgo.db")
+db = SqliteDatabase(WORK_DIR + "/data/database/csgo02.db")
 
 
 class CSGame(Model):
