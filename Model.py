@@ -21,6 +21,7 @@ class Market:
         self.left  = args[1]
         self.right = args[2]
         self.winner = args[3]
+        self.time_snapshot = args[4]
 
 class Fixture:
     def __init__(self,*args):
