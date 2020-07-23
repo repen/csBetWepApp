@@ -107,8 +107,8 @@
 
 	      <td>{{ time_human( search_markets( fixture.markets[ num_s * -1 ], name_market).time_snapshot ) if name_market and search_markets( fixture.markets[ num_s * -1 ], name_market).time_snapshot else '---' }}</td>
 
-	      <td>{{ search_markets( fixture.markets[ num_s * -1 ], name_market).left  if name_market and search_markets( fixture.markets[ num_s * -1 ], name_market).left else '---' }}</td>
-	      <td>{{ search_markets( fixture.markets[ num_s * -1 ], name_market).right if name_market and search_markets( fixture.markets[ num_s * -1 ], name_market).right else '---' }}</td>
+	      <td>{{ search_markets( fixture.markets[ num_s * -1 ], name_market).left  if name_market and search_markets( fixture.markets[ num_s * -1 ], name_market).left else '0' }}</td>
+	      <td>{{ search_markets( fixture.markets[ num_s * -1 ], name_market).right if name_market and search_markets( fixture.markets[ num_s * -1 ], name_market).right else '0' }}</td>
 	      <td>{{ search_markets( fixture.markets[ num_s * -1 ], name_market).winner if name_market and search_markets( fixture.markets[ num_s * -1 ], name_market).winner else '---'}}</td>
 	    </tr>
 	    {% endfor %}
