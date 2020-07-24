@@ -94,14 +94,14 @@ def filter_page():
         params['num_snapshot'] = int( params['num_snapshot'] )
         query = get_search(params, fixtures)
         
-        for q in query:
-            for e, m in enumerate( q.markets):
-                if not m:
-                    q.markets.pop(e)
+        # for q in query:
+        #     for e, m in enumerate( q.markets):
+        #         if not m:
+        #             q.markets.pop(e)
 
         data['result'] = query
         data['params'] = params
-        # print(query[0].markets[-5][  ], "!!!")
+        # print(query[0].markets[-5], "!!!")
 
 
     data["name_markets"] = set( itertools.chain.from_iterable( [x.name_markets for x in fixtures] ) )
