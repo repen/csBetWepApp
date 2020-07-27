@@ -53,12 +53,14 @@ def match_page(m_id):
     path_id = WORK_DIR + "/data/objects/" + hash_(m_id)
     l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
     if path_id in l_objs:
-        
-        with open(path_id, "rb") as f:
-            fixture = pickle.load(f)
-        
-        data['name_markets'] = sorted( list( fixture.name_markets ) )
-        return render_template("match.html", data = data)
+        try:
+            with open(path_id, "rb") as f:
+                fixture = pickle.load(f)
+                data['name_markets'] = sorted( list( fixture.name_markets ) )
+                return render_template("match.html", data = data)
+        except Exception as e:
+            print("Error", str(e))
+            return "Error: " + str(e)
     
     else:
         return "Not path_id " + m_id 
@@ -79,10 +81,12 @@ def filter_page():
 
 
     for path in l_objs:
-        
-        with open(path, "rb") as f:
-            fixture = pickle.load(f)
-        fixtures.append( fixture )
+        try:
+            with open(path, "rb") as f:
+                fixture = pickle.load(f)
+            fixtures.append( fixture )
+        except Exception as e:
+            print("Error", str(e))
 
     if params:
         {
