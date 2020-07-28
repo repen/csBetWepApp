@@ -8,6 +8,10 @@ from Globals import WORK_DIR
 from tools import hash_, listdir_fullpath, get_search
 import itertools
 from waitress import serve
+# import logging
+# logger = logging.getLogger('waitress')
+# logger.setLevel(logging.INFO)
+
 
 app = Flask(__name__)
 
@@ -85,7 +89,7 @@ def filter_page():
     data = {}
     data['result'] = []
     params = request.args.to_dict()
-    
+    print("Filter")
     fixtures = []
     l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
 
@@ -106,17 +110,10 @@ def filter_page():
         params['sum_t1'] = int( params['sum_t1'] )
         params['sum_t2'] = int( params['sum_t2'] )
         params['num_snapshot'] = int( params['num_snapshot'] )
-        query = get_search(params, fixtures)
-        
-        # for q in query:
-        #     for e, m in enumerate( q.markets):
-        #         if not m:
-        #             q.markets.pop(e)
+        query = get_search( params, fixtures )
 
         data['result'] = query
         data['params'] = params
-        # print(query[0].markets[-5], "!!!")
-
 
     data["name_markets"] = set( itertools.chain.from_iterable( [x.name_markets for x in fixtures] ) )
     data["teams"] = set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) )
@@ -126,7 +123,8 @@ def filter_page():
 
 
 if __name__ == '__main__':
+
     if os.getenv("APP_PATH", False):
-        serve(app, host='0.0.0.0', port=5000)
+        serve(app, host='0.0.0.0', port=5010)
     else:
         app.run(port=5010, host='0.0.0.0', debug=True)
