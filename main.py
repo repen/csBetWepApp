@@ -7,6 +7,7 @@ from datetime import datetime
 from Globals import WORK_DIR
 from tools import hash_, listdir_fullpath, get_search
 import itertools
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -56,8 +57,17 @@ def match_page(m_id):
         try:
             with open(path_id, "rb") as f:
                 fixture = pickle.load(f)
-                data['name_markets'] = sorted( list( fixture.name_markets ) )
-                return render_template("match.html", data = data)
+            data['name_markets'] = sorted( list( fixture.name_markets ) )
+            data['team1'], data['team2'] = fixture.team01, fixture.team02
+            data["result"] = fixture.markets[0]
+            res_markets = {}
+            first = fixture.markets[0]
+            for x in first:
+                res_markets[x] = first[x].winner
+            
+            data["result"] = res_markets
+            print(res_markets)
+            return render_template("match.html", data = data)
         except Exception as e:
             print("Error", str(e))
             return "Error: " + str(e)
@@ -117,6 +127,6 @@ def filter_page():
 
 if __name__ == '__main__':
     if os.getenv("APP_PATH", False):
-        app.run()
+        serve(app, host='0.0.0.0', port=5000)
     else:
         app.run(port=5010, host='0.0.0.0', debug=True)

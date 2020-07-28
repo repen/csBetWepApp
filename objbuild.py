@@ -1,8 +1,8 @@
 class Market:
     def __init__(self, *args):
-        self.name  = args[0]
-        self.left  = args[1]
-        self.right = args[2]
+        self.name   = args[0]
+        self.left   = args[1]
+        self.right  = args[2]
         self.winner = args[3]
         self.time_snapshot = args[4]
 
