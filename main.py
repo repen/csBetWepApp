@@ -28,7 +28,18 @@ def utility_processor():
     def time_human(timestamp):
         return datetime.fromtimestamp( timestamp ).strftime("%Y.%m.%d %H:%M")
 
-    return dict(search_markets=search_markets, time_human=time_human)
+    def rename_market(market):
+
+        result = None
+        for name in market.keys():
+            search = re.search( r"выигра\w+ одну карту", name)
+            if search:
+                result = name
+                break
+
+        return result
+
+    return dict(search_markets=search_markets, time_human=time_human, rename_market=rename_market)
 
 @app.route('/')
 def index():
@@ -88,9 +99,18 @@ def convert_date(string):
     return (datetime.strptime(start, "%Y-%m-%d").timestamp(), datetime.strptime(end, "%Y-%m-%d").timestamp())
 
 def name_markets_prepare(fixtures):
+    pattern01 = r"выиграют одну карту|выиграет одну карту"
+    def win_single_map(name_market):
+        search = re.findall(pattern01, name_market)
+        if search:
+            # print(name_market, search)
+            name_market = "выиграют одну карту"
+        
+        return name_market
     
     name_markets = set( itertools.chain.from_iterable( [x.name_markets for x in fixtures] ) )
-    name_markets = list( filter( lambda x: re.search( pattern01, x, re.I) , name_markets ) )
+    name_markets = set( map(win_single_map , name_markets ) )
+
     name_markets = sorted( name_markets )
     
     return name_markets

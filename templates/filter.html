@@ -96,7 +96,11 @@
 	  		{% set t2price = data['params']['sum_t2'] %}
   		{% endif %}
 	  	{% for fixture in data['result'] %}
-
+	  		
+	  		{% if name_market == "выиграют одну карту" %}
+				{% set name_market = rename_market( fixture.markets[ num_s ]) %}
+	  		{%endif%}
+	    
 	    <tr>
 	      <th>{{time_human( fixture.m_time )}}</th>
 	      <th>{{fixture.m_id}}</th>

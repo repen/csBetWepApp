@@ -36,7 +36,22 @@ def get_search(param, objs):
         result = l( f( lambda x : param['t2name'] in x.team02, result) )
 
     if param['name_market']:
-        result = l( f( lambda x : param['name_market'] in x.name_markets, result)  )
+        def name_processing_market(m):
+            markets = m.name_markets
+            result = False
+            for name in markets:
+
+                if re.search( r"выигра\w+ одну карту", name):
+                    result = True
+                    break
+                
+                if re.search( param['name_market'], name):
+                    result = True
+                    break
+
+            return result
+        # result = l( f( lambda x : param['name_market'] in x.name_markets, result)  )
+        result = l( f( name_processing_market, result)  )
 
     def check_sum(sum_, mode, arr):
         res = l( f( lambda x:param['name_market'] in x.name, arr) )
