@@ -11,7 +11,12 @@
 		{% for fixture in data['fixtures'] %}
 		
 		<a href="match/{{fixture[0]}}">
-			<button type="button" class="btn btn-light m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>
+			{% if fixture[3] in data['hash_objs'] %}
+				<button type="button" class="btn btn-info m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>
+			{% else %}
+				<button type="button" class="btn  btn-light m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>
+			{% endif %}
+			
 		</a> 
 
 		{% endfor %}

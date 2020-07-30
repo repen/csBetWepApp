@@ -33,6 +33,8 @@ def utility_processor():
 def index():
     data = {}
     data['fixtures'] = []
+    data['hash_objs'] = list( map( lambda x:x.split("/")[-1] , listdir_fullpath( WORK_DIR + "/data/objects" ) ) )
+
     
     current_time = datetime.now().timestamp()
     date = request.args.get('date', default=False)
@@ -47,7 +49,7 @@ def index():
         m_id = fixture.m_id
         m_team = "{} vs {}".format( fixture.team1, fixture.team2 )
         m_time = datetime.fromtimestamp( fixture.m_time ).strftime("%Y.%m.%d %H:%M")
-        data['fixtures'].append( ( m_id, m_team, m_time) )
+        data['fixtures'].append( ( m_id, m_team, m_time, hash_( m_id )) )
 
     return render_template("index.html", data = data)
 
