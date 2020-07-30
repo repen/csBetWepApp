@@ -127,6 +127,6 @@ def filter_page():
 if __name__ == '__main__':
 
     if os.getenv("APP_PATH", False):
-        serve(app, host='0.0.0.0', port=5010)
+        serve(app, host='0.0.0.0', port=5000)
     else:
         app.run(port=5010, host='0.0.0.0', debug=True)
