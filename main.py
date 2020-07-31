@@ -11,8 +11,7 @@ from waitress import serve
 # import logging
 # logger = logging.getLogger('waitress')
 # logger.setLevel(logging.INFO)
-pattern01 = r"main|\[Карта \#\d\] Победа на карте|Количество карт \d\.\d\
-    |Количество карт|Количество раундов \d{1,2}\.\d"
+pattern01 = r"выигра\w+ \d+ раун\w+"
 
 app = Flask(__name__)
 
@@ -147,6 +146,8 @@ def filter_page():
         data['params'] = params
 
     data["name_markets"] = name_markets_prepare( fixtures )
+
+    data["name_markets"] = list( filter(lambda x: not re.search(pattern01, x), data["name_markets"] ) )
     data["teams"] = sorted( set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) ) )
 
     return render_template("filter.html", data = data)
