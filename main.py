@@ -25,6 +25,11 @@ def utility_processor():
         return result
 
     def time_human(timestamp):
+        if isinstance(timestamp, dict):
+            for s in timestamp:
+                timestamp[s].time_snapshot
+                return datetime.fromtimestamp( timestamp[s].time_snapshot ).strftime("%Y.%m.%d %H:%M")
+
         return datetime.fromtimestamp( timestamp ).strftime("%Y.%m.%d %H:%M")
 
     def rename_market(market):
@@ -79,9 +84,11 @@ def match_page(m_id):
             data["result"] = fixture.markets[0]
             res_markets = {}
             first = fixture.markets[0]
+
             for x in first:
                 res_markets[x] = first[x].winner
             
+            data['markets'] = fixture.markets
             data["result"] = res_markets
             print(res_markets)
             return render_template("match.html", data = data)
