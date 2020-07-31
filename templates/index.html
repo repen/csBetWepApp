@@ -10,14 +10,16 @@
 
 		{% for fixture in data['fixtures'] %}
 		
-		<a href="match/{{fixture[0]}}">
+
 			{% if fixture[3] in data['hash_objs'] %}
+			<a href="match/{{fixture[0]}}">
 				<button type="button" class="btn btn-info m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>
+			</a>
 			{% else %}
-				<button type="button" class="btn  btn-light m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>
+				<button type="button" class="btn  btn-light m-1"> {{fixture[1]}} <br> {{fixture[2]}} </button>	
 			{% endif %}
 			
-		</a> 
+
 
 		{% endfor %}
 
@@ -28,4 +30,18 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src="{{url_for('static', filename='js/main.js')}}"></script>
+	<script>
+		var container = document.querySelector(".container");
+		container.innerHTML = '<p>Date: <input type="text" id="datepicker"></p>' + container.innerHTML;
+		(function() {
+
+		    $( "#datepicker" ).datepicker({
+		        onSelect  : function(Text){
+		            // console.log(el);
+		            window.location.href = "/?date=" + Text;
+		        }
+		    });
+
+		})();
+	</script>
 {% endblock %}

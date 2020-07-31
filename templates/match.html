@@ -24,7 +24,7 @@
 			
 			<p>Date snapshot: {{time_human( market)}} </p>
 			{% for key, val in market.items() %}
-				<p>{{val.left}} | {{key | replace('Main', 'Основной')}} | {{val.right}}</p>
+				<p>{{val.left}}  | {{key | replace('Main', 'Основной')}} | {{val.right}}</p>
 			{% endfor %}
 			<hr>
 		
