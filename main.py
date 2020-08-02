@@ -11,7 +11,7 @@ from waitress import serve
 # import logging
 # logger = logging.getLogger('waitress')
 # logger.setLevel(logging.INFO)
-pattern01 = r"выигра\w+ \d+ раун\w+"
+pattern001 = r"выигра\w+ \d+ раун\w+|ножом"
 
 app = Flask(__name__)
 
@@ -148,13 +148,15 @@ def filter_page():
         params['sum_t2'] = int( params['sum_t2'] )
         params['num_snapshot'] = int( params['num_snapshot'] )
         query = get_search( params, fixtures )
+        # import pdb;pdb.set_trace()
+
 
         data['result'] = query
         data['params'] = params
 
     data["name_markets"] = name_markets_prepare( fixtures )
 
-    data["name_markets"] = list( filter(lambda x: not re.search(pattern01, x), data["name_markets"] ) )
+    data["name_markets"] = list( filter(lambda x: not re.search(pattern001, x), data["name_markets"] ) )
     data["teams"] = sorted( set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) ) )
 
     return render_template("filter.html", data = data)
