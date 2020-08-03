@@ -1,12 +1,7 @@
-class Market:
-    def __init__(self, *args):
-        self.name   = args[0]
-        self.left   = args[1]
-        self.right  = args[2]
-        self.winner = args[3]
-        self.time_snapshot = args[4]
+from collections import namedtuple
 
 
+Market = namedtuple('Market', ['name', 'left', 'right', 'winner', 'time_snapshot' ])
 
 
 class Fixture:
