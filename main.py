@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, g
 import os, json, re, pickle
 from Model import CSGame
 from objbuild import Market, Fixture
@@ -44,6 +44,45 @@ def utility_processor():
         return result
 
     return dict(search_markets=search_markets, time_human=time_human, rename_market=rename_market)
+
+
+def convert_date(string):
+    start = string.split(":")[0]
+    end = string.split(":")[1]
+    return (datetime.strptime(start, "%Y-%m-%d").timestamp(), datetime.strptime(end, "%Y-%m-%d").timestamp())
+
+def name_markets_prepare(fixtures):
+    pattern01 = r"выиграют одну карту|выиграет одну карту"
+    def win_single_map(name_market):
+        search = re.findall(pattern01, name_market)
+        if search:
+            # print(name_market, search)
+            name_market = "выиграют одну карту"
+        
+        return name_market
+    
+    name_markets = set( itertools.chain.from_iterable( [x.name_markets for x in fixtures] ) )
+    name_markets = set( map(win_single_map , name_markets ) )
+
+    name_markets = sorted( name_markets )
+    
+    return name_markets
+
+
+def load_objects():
+    fixtures = []
+    l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
+
+    for path in l_objs:
+        try:
+            with open(path, "rb") as f:
+                fixture = pickle.load(f)
+            fixtures.append( fixture )
+        except Exception as e:
+            print("Error", str(e))
+    
+    return fixtures
+
 
 @app.route('/')
 def index():
@@ -99,45 +138,13 @@ def match_page(m_id):
     else:
         return "Not path_id " + m_id 
 
-def convert_date(string):
-    start = string.split(":")[0]
-    end = string.split(":")[1]
-    return (datetime.strptime(start, "%Y-%m-%d").timestamp(), datetime.strptime(end, "%Y-%m-%d").timestamp())
-
-def name_markets_prepare(fixtures):
-    pattern01 = r"выиграют одну карту|выиграет одну карту"
-    def win_single_map(name_market):
-        search = re.findall(pattern01, name_market)
-        if search:
-            # print(name_market, search)
-            name_market = "выиграют одну карту"
-        
-        return name_market
-    
-    name_markets = set( itertools.chain.from_iterable( [x.name_markets for x in fixtures] ) )
-    name_markets = set( map(win_single_map , name_markets ) )
-
-    name_markets = sorted( name_markets )
-    
-    return name_markets
-
 @app.route('/filter')
 def filter_page():
     data = {}
     data['result'] = []
     params = request.args.to_dict()
-    print("Filter")
-    fixtures = []
-    l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
+    fixtures = g.objects
 
-
-    for path in l_objs:
-        try:
-            with open(path, "rb") as f:
-                fixture = pickle.load(f)
-            fixtures.append( fixture )
-        except Exception as e:
-            print("Error", str(e))
 
     if params:
         {
@@ -161,6 +168,11 @@ def filter_page():
 
     return render_template("filter.html", data = data)
 
+
+@app.before_request
+def before_request():
+    if request.endpoint == "filter_page":
+        g.objects = load_objects()
 
 
 if __name__ == '__main__':
