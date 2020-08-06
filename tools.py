@@ -41,14 +41,19 @@ def get_search(param, objs):
             result = False
             for name in markets:
 
+
                 if re.search( r"выигра\w+ одну карту", param['name_market']):
                     result = True
                     break
 
 
-                if re.search( param['name_market'], name) or param['name_market'] == name:
+                if re.search( "^{}".format(param['name_market']), name) or param['name_market'] == name:
+                    # if "Количество раундов 26.5" == name:
+                    #     import pdb;pdb.set_trace();
+
                     result = True
                     break
+                
 
             return result
         # result = l( f( lambda x : param['name_market'] in x.name_markets, result)  )
@@ -73,5 +78,5 @@ def get_search(param, objs):
     if param['sum_t2']:
         result = l ( f(
             lambda x: check_sum( param['sum_t2'], 2, x.markets[ param['num_snapshot'] ] ), result ) )
-
+    print(result)
     return result
