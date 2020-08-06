@@ -61,7 +61,10 @@ def get_search(param, objs):
 
 
     def check_sum(sum_, mode, arr):
-        res = l( f( lambda x:param['name_market'] in x.name, arr) )
+
+        arr_obj = arr.values()
+        res = l( f( lambda x: param['name_market'] in x.name, arr_obj) )
+
         if res:
             market = res[0]
 
@@ -70,13 +73,13 @@ def get_search(param, objs):
             if mode == 2:
                 return market.right >= sum_
         return False
-
+    
     if param['sum_t1']:
         result = l ( f(
-            lambda x: check_sum( param['sum_t1'], 1, x.markets[ param['num_snapshot'] ] ), result ) )
+            lambda x: check_sum( param['sum_t1'], 1, x.markets[ param['num_snapshot'] * -1 ] ), result ) )
 
     if param['sum_t2']:
         result = l ( f(
-            lambda x: check_sum( param['sum_t2'], 2, x.markets[ param['num_snapshot'] ] ), result ) )
-    print(result)
+            lambda x: check_sum( param['sum_t2'], 2, x.markets[ param['num_snapshot'] * -1 ] ), result ) )
+
     return result
