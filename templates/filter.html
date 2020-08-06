@@ -90,29 +90,39 @@
 	  </thead>
 	  <tbody>
 	  	{% if data['params'] %}
-	  		{% set num_s = (data['params']['num_snapshot'] + 1) * -1 %}
+
+	  		{% set num_s = ( data['params']['num_snapshot'] + 1) * -1  %}
 	  		{% set name_market = data['params']['name_market'] %}
 	  		{% set t1price = data['params']['sum_t1'] %}
 	  		{% set t2price = data['params']['sum_t2'] %}
   		{% endif %}
 	  	{% for fixture in data['result'] %}
 	  		
-	  		{% if name_market == "выиграют одну карту" %}
-				{% set name_market = rename_market( fixture.markets[ num_s ]) %}
-	  		{%endif%}
 	    
-	    <tr>
-	      <th>{{time_human( fixture.m_time )}}</th>
-	      <th>{{fixture.m_id}}</th>
-	      <td>{{data['params']['num_snapshot']}}</td>
-	      <td>{{fixture.team01}}</td>
-	      <td>{{fixture.team02}}</td>
-	      <td>{{ name_market if name_market else '---' }}</td>
-	      <td>{{ time_human( fixture.markets[ num_s ][name_market].time_snapshot ) if name_market and fixture.markets[ num_s ][name_market].time_snapshot else '0' }}</td>
-		  <td>{{ fixture.markets[ num_s ][ name_market ].left   if name_market  else '0' }}</td>
-		  <td>{{ fixture.markets[ num_s ][ name_market ].right  if name_market  else '0' }}</td>
-		  <td>{{ fixture.markets[ num_s ][ name_market ].winner if name_market  else '0' }}</td>
-	    </tr>
+		    {% for name, obj_market in fixture.markets[ num_s ].items()%}
+
+			    {% if if_in( data['params']['name_market'], name ) and
+			      if_in( data['params']['sum_t1'], obj_market.left) and 
+			      if_in( data['params']['sum_t2'], obj_market.right) %}
+				    <tr>
+				      <th>{{time_human( fixture.m_time )}}</th>
+				      <th>{{fixture.m_id}}</th>
+				      <td>{{data['params']['num_snapshot']}}</td>
+				      <td>{{fixture.team01}}</td>
+				      <td>{{fixture.team02}}</td>
+				      
+				      <td>{{ obj_market.name }}</td>
+				      
+				      <td>{{ time_human( obj_market.time_snapshot ) }}</td>
+					  <td>{{ obj_market.left   }}</td>
+					  <td>{{ obj_market.right  }}</td>
+					  <td>{{ obj_market.winner }}</td>
+				    
+				    </tr>
+				{%endif%}
+			
+			{% endfor %}
+
 	    {% endfor %}
 	  </tbody>
 	</table>

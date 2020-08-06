@@ -42,8 +42,15 @@ def utility_processor():
                 break
 
         return result
+    def if_in(a,b):
+        if isinstance(a, int):
+            return a <= b
+        if isinstance(a, str):
+            return a in b
+        return False
 
-    return dict(search_markets=search_markets, time_human=time_human, rename_market=rename_market)
+    return dict(search_markets=search_markets, time_human=time_human, 
+        rename_market=rename_market, if_in = if_in)
 
 
 def convert_date(string):
@@ -129,7 +136,6 @@ def match_page(m_id):
             
             data['markets'] = fixture.markets
             data["result"] = res_markets
-            print(res_markets)
             return render_template("match.html", data = data)
         except Exception as e:
             print("Error", str(e))
