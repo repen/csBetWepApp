@@ -64,7 +64,7 @@ def get_search(param, objs):
 
         arr_obj = arr.values()
         res = l( f( lambda x: param['name_market'] in x.name, arr_obj) )
-
+        # import pdb;pdb.set_trace()
         if res:
             market = res[0]
 
@@ -75,11 +75,12 @@ def get_search(param, objs):
         return False
     
     if param['sum_t1']:
+        # import pdb;pdb.set_trace()
         result = l ( f(
-            lambda x: check_sum( param['sum_t1'], 1, x.markets[ param['num_snapshot'] * -1 ] ), result ) )
+            lambda x: check_sum( param['sum_t1'], 1, x.markets[ (param['num_snapshot'] + 1) * -1 ] ), result ) )
 
     if param['sum_t2']:
         result = l ( f(
-            lambda x: check_sum( param['sum_t2'], 2, x.markets[ param['num_snapshot'] * -1 ] ), result ) )
+            lambda x: check_sum( param['sum_t2'], 2, x.markets[ (param['num_snapshot'] + 1) * -1 ] ), result ) )
 
     return result
