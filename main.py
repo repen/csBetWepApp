@@ -11,7 +11,7 @@ from waitress import serve
 # import logging
 # logger = logging.getLogger('waitress')
 # logger.setLevel(logging.INFO)
-pattern001 = r"выигра\w+ \d+ раун\w+|ножом"
+pattern001 = r"выигра\w+ \d+ раун\w+|ножом|убийство|выигра\w+ две|три карт\w"
 
 app = Flask(__name__)
 
@@ -46,11 +46,24 @@ def utility_processor():
         if isinstance(a, int):
             return a <= b
         if isinstance(a, str):
-            return a in b
+            return a in b and not re.search( pattern001, b )
         return False
+    def swap_result(name, markets, result):
+        replace_result = result
+
+        if re.search(r"Количество карт \d\.\d", name):
+            replace_result = markets[ 'Main' ].winner
+
+        if re.search(r"^Количество раундов 26\.5", name):
+            replace_result = markets[ name.replace("Количество раундов 26.5", "Main") ].winner
+        
+        if re.search(r"(?!^)Количество раундов 26\.5", name):
+            replace_result = markets[ name.replace("Количество раундов 26.5", "Победа на карте") ].winner
+        
+        return str( replace_result )
 
     return dict(search_markets=search_markets, time_human=time_human, 
-        rename_market=rename_market, if_in = if_in)
+        rename_market=rename_market, if_in = if_in, swap_result = swap_result)
 
 
 def convert_date(string):

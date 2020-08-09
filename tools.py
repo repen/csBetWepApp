@@ -82,5 +82,5 @@ def get_search(param, objs):
     if param['sum_t2']:
         result = l ( f(
             lambda x: check_sum( param['sum_t2'], 2, x.markets[ (param['num_snapshot'] + 1) * -1 ] ), result ) )
-
+    # import pdb;pdb.set_trace();
     return result

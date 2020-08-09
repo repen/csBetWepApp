@@ -116,7 +116,13 @@
 				      <td>{{ time_human( obj_market.time_snapshot ) }}</td>
 					  <td>{{ obj_market.left   }}</td>
 					  <td>{{ obj_market.right  }}</td>
+
+					{% if if_in( "Количество раундов" , obj_market.name ) or 
+						if_in("Количество карт", obj_market.name)%}
+					  <td>{{ swap_result( obj_market.name,  fixture.markets[ num_s ], obj_market.winner ) }}</td>
+					{% else %}
 					  <td>{{ obj_market.winner }}</td>
+					{%endif%}
 				    
 				    </tr>
 				{%endif%}
