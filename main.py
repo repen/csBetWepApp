@@ -11,7 +11,7 @@ from waitress import serve
 # import logging
 # logger = logging.getLogger('waitress')
 # logger.setLevel(logging.INFO)
-pattern001 = r"выигра\w+ \d+ раун\w+|ножом|убийство|выигра\w+ две|три карт\w"
+pattern001 = r"выигра\w+ \d+ раун\w+|ножом|убийство|выигра\w+ две|три карт\w|ACE|pro100"
 
 app = Flask(__name__)
 
