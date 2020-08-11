@@ -3,11 +3,12 @@ import os, json, re, pickle
 from Model import CSGame
 from objbuild import Market, Fixture
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 from Globals import WORK_DIR
 from tools import hash_, listdir_fullpath, get_search
 import itertools
 from waitress import serve
+from cachier import cachier
 # import logging
 # logger = logging.getLogger('waitress')
 # logger.setLevel(logging.INFO)
@@ -103,6 +104,16 @@ def load_objects():
     
     return fixtures
 
+@cachier(stale_after=timedelta(seconds=60*60*2))
+def load_objects_cache():
+    fixtures = load_objects()
+    data = {}
+
+    data["name_markets"] = name_markets_prepare( fixtures )
+    data["name_markets"] = list( filter(lambda x: not re.search(pattern001, x), data["name_markets"] ) )
+    data["teams"] = sorted( set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) ) )
+
+    return data
 
 @app.route('/')
 def index():
@@ -162,13 +173,12 @@ def filter_page():
     data = {}
     data['result'] = []
     params = request.args.to_dict()
-    fixtures = g.objects
+    fixtures = []
 
 
     if params:
-        {
-        'time': '2020-07-21:2020-07-22', 'name_market': '', 
-        't1name': '', 't2name': '', 'sum_t1': '100', 'sum_t2': '100', 'num_snapshot': '5'}
+        fixtures = load_objects()
+
         params['time'] = convert_date( params['time'] )
         params['sum_t1'] = int( params['sum_t1'] )
         params['sum_t2'] = int( params['sum_t2'] )
@@ -180,18 +190,18 @@ def filter_page():
         data['result'] = query
         data['params'] = params
 
-    data["name_markets"] = name_markets_prepare( fixtures )
-
-    data["name_markets"] = list( filter(lambda x: not re.search(pattern001, x), data["name_markets"] ) )
-    data["teams"] = sorted( set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) ) )
-
+    fixtures_c = load_objects_cache()
+    data["name_markets"] = fixtures_c["name_markets"]
+    data["teams"] = fixtures_c["teams"]
+    
     return render_template("filter.html", data = data)
 
 
 @app.before_request
 def before_request():
     if request.endpoint == "filter_page":
-        g.objects = load_objects()
+        # g.objects = load_objects()
+        pass
 
 
 if __name__ == '__main__':
