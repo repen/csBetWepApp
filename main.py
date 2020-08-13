@@ -9,6 +9,7 @@ from tools import hash_, listdir_fullpath, get_search
 import itertools
 from waitress import serve
 from cachier import cachier
+import time
 # import logging
 # logger = logging.getLogger('waitress')
 # logger.setLevel(logging.INFO)
@@ -89,7 +90,20 @@ def name_markets_prepare(fixtures):
     
     return name_markets
 
+def timeit(f):
 
+    def timed(*args, **kw):
+
+        ts = time.time()
+        result = f(*args, **kw)
+        te = time.time()
+
+        print("Time:", te-ts, f)
+        return result
+
+    return timed
+
+@timeit
 def load_objects():
     fixtures = []
     l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
@@ -104,15 +118,16 @@ def load_objects():
     
     return fixtures
 
-@cachier(stale_after=timedelta(seconds=60*60*2))
+# @cachier(stale_after=timedelta(seconds=60*60*2))
 def load_objects_cache():
     fixtures = load_objects()
     data = {}
-
+    ts = time.time()
     data["name_markets"] = name_markets_prepare( fixtures )
     data["name_markets"] = list( filter(lambda x: not re.search(pattern001, x), data["name_markets"] ) )
     data["teams"] = sorted( set( itertools.chain.from_iterable( [ [x.team01, x.team02] for x in fixtures] ) ) )
-
+    te = time.time()
+    print("Time:", te-ts, "load_objects_cache")
     return data
 
 @app.route('/')
