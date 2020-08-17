@@ -38,6 +38,10 @@ def get_search(param, objs):
     if param['name_market']:
         def name_processing_market(m):
             markets = m.name_markets
+
+            last_names = set( x.name for x in m.markets[-1].values() )
+            markets.update( last_names )
+            
             result = False
             for name in markets:
 
