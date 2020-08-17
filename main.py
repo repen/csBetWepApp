@@ -116,7 +116,7 @@ def load_objects():
     
     return fixtures
 
-# @cachier(stale_after=timedelta(seconds=60*60*5))
+@cachier(stale_after=timedelta(seconds=60*60*5))
 def load_objects_cache():
     fixtures = load_objects()
     data = {}
