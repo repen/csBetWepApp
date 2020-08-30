@@ -102,18 +102,24 @@ def name_markets_prepare(fixtures):
     return name_markets
 
 @timeit
-def load_objects():
+def load_objects(*args, **kwargs):
+    index = kwargs.setdefault("index", -1)
     fixtures = []
-    l_objs = listdir_fullpath( WORK_DIR + "/data/objects" )
+    l_objs = listdir_fullpath(WORK_DIR + "/data/objects")
 
     for path in l_objs:
         try:
             with open(path, "rb") as f:
                 fixture = pickle.load(f)
-            fixtures.append( fixture )
+            try:
+                # fixture._snapshots = [ fixture._snapshots[ index ] ]
+                fixture._snapshots = [ fixture._snapshots[ index ] ]
+                fixtures.append(fixture)
+            except IndexError as ie:
+                print("IndexError", ie)
         except Exception as e:
             print("Error", str(e))
-    
+
     return fixtures
 
 @cachier(stale_after=timedelta(seconds=60*60*5))
@@ -192,7 +198,9 @@ def filter_page():
 
 
     if params:
-        fixtures = load_objects()
+        index = params['num_snapshot']
+        # import pdb;pdb.set_trace()
+        fixtures = load_objects(index= (int( index ) + 1) * -1 )
 
         params['time'] = convert_date( params['time'] )
         params['sum_t1'] = int( params['sum_t1'] )

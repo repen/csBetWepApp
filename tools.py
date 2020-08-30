@@ -24,7 +24,7 @@ def get_search(param, objs):
     l = list
     f = filter
     # print(len(result[0].markets), "!!!!!!!")
-    result = l( f( lambda fx : len( fx.markets ) >  param['num_snapshot'], result ) )
+    # result = l( f( lambda fx : len( fx.markets ) >  param['num_snapshot'], result ) )
 
     if param['time'][0] and param['time'][1]:
         result = l( f ( lambda x : x.m_time > param['time'][0] and x.m_time < param['time'][1], result) )
@@ -81,10 +81,10 @@ def get_search(param, objs):
     if param['sum_t1']:
         # import pdb;pdb.set_trace()
         result = l ( f(
-            lambda x: check_sum( param['sum_t1'], 1, x.markets[ (param['num_snapshot'] + 1) * -1 ] ), result ) )
+            lambda x: check_sum( param['sum_t1'], 1, x.markets[ 0 ] ), result ) )
 
     if param['sum_t2']:
         result = l ( f(
-            lambda x: check_sum( param['sum_t2'], 2, x.markets[ (param['num_snapshot'] + 1) * -1 ] ), result ) )
+            lambda x: check_sum( param['sum_t2'], 2, x.markets[ 0 ] ), result ) )
     # import pdb;pdb.set_trace();
     return result
