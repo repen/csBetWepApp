@@ -151,7 +151,7 @@ def index():
         date = datetime.strptime(date, "%m/%d/%Y").timestamp()
         fixtures = CSGame.select().where( (date < CSGame.m_time) & (CSGame.m_time < date + 87000))
     else:
-        fixtures = CSGame.select().where( CSGame.m_time < current_time + 87000 )
+        fixtures = CSGame.select().where( CSGame.m_time > current_time + 87000 )
     
     for fixture in fixtures:
         m_id = fixture.m_id
