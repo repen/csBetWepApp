@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from Globals import WORK_DIR
 from tools import hash_, listdir_fullpath, get_search
-import itertools
+import itertools, gc
 from waitress import serve
 from cachier import cachier
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -41,7 +41,7 @@ def utility_processor():
     def time_human(timestamp):
         if isinstance(timestamp, dict):
             for s in timestamp:
-                timestamp[s].time_snapshot
+                # timestamp[s].time_snapshot
                 return datetime.fromtimestamp( timestamp[s].time_snapshot ).strftime("%Y.%m.%d %H:%M")
 
         return datetime.fromtimestamp( timestamp ).strftime("%Y.%m.%d %H:%M")
@@ -106,7 +106,7 @@ def load_objects(*args, **kwargs):
     index = kwargs.setdefault("index", -1)
     fixtures = []
     l_objs = listdir_fullpath(WORK_DIR + "/data/objects")
-
+    gc.disable()
     for path in l_objs:
         try:
             with open(path, "rb") as f:
@@ -119,7 +119,7 @@ def load_objects(*args, **kwargs):
                 print("IndexError", ie)
         except Exception as e:
             print("Error", str(e))
-
+    gc.enable()
     return fixtures
 
 @cachier(stale_after=timedelta(seconds=60*60*5))
